@@ -6,6 +6,8 @@ import errorMiddleware from "./middlewares/error.middleware";
 import morgan from "morgan";
 import cookieParser from "cookie-parser";
 
+const ORIGIN = process.env.ORIGIN;
+
 export class App {
   public express: Application;
   private controllers: Controller[];
@@ -22,9 +24,7 @@ export class App {
   }
 
   private initiatializeMiddlewares() {
-    this.express.use(
-      cors({ origin: "http://localhost:5173", credentials: true }),
-    );
+    this.express.use(cors({ origin: ORIGIN, credentials: true }));
     this.express.use(express.json());
     this.express.use(morgan("dev"));
     this.express.use(cookieParser());
