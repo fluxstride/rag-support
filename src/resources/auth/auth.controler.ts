@@ -21,6 +21,23 @@ import { passwordResetTokens } from "../../lib/db/schema/passwordResetTokens";
 
 let refreshTokens: any[] = [];
 
+export function setAuthCookie(
+  res: Response,
+  name: string,
+  value: string,
+  maxAgeMs: number,
+) {
+  const isProduction = process.env.NODE_ENV === "production";
+
+  res.cookie(name, value, {
+    httpOnly: true,
+    secure: isProduction, // only set secure in production
+    sameSite: isProduction ? "none" : "lax", // 'none' for cross-site in prod, 'lax' for dev
+    maxAge: maxAgeMs,
+    path: "/",
+  });
+}
+
 const generateAccessToken = (payload: any) => {
   return jwt.sign(payload, process.env.SECRETKEY as string, {
     expiresIn: "15s",
@@ -196,19 +213,9 @@ export class AuthController {
     const accessToken = generateAccessToken(payload);
     const refreshToken = generateRefreshToken(payload);
 
-    res
-      .cookie("refreshToken", refreshToken, {
-        maxAge: 10000000,
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-      })
-      .cookie("accessToken", accessToken, {
-        maxAge: 1000 * 15,
-        httpOnly: true,
-        secure: false,
-        sameSite: "lax",
-      });
+    setAuthCookie(res, "accessToken", accessToken, 15 * 60 * 1000);
+
+    setAuthCookie(res, "refreshToken", refreshToken, 7 * 24 * 60 * 60 * 1000);
 
     const { password: _, ...user } = existingUser;
 
