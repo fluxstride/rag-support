@@ -21,6 +21,8 @@ const app = new App(
   PORT,
 );
 
-app.listen();
+if (process.env.NODE_ENV === "development") {
+  app.listen();
+}
 
 export default app.express;
