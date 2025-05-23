@@ -5,7 +5,7 @@ import { ProfileController } from "./resources/profile/profile.controller";
 import { MessageController } from "./resources/message/message.controller";
 import "dotenv/config";
 // import { TrainController } from "./resources/train/train.controller";
-import { DataController } from "./resources/data/data.controller";
+// import { DataController } from "./resources/data/data.controller";
 
 const PORT = Number(process.env.PORT || 5000);
 
@@ -16,7 +16,7 @@ const app = new App(
     new ProfileController(),
     new MessageController(),
     // new TrainController(),
-    new DataController(),
+    // new DataController(),
   ],
   PORT,
 );
